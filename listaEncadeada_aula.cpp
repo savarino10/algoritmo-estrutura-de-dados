@@ -33,25 +33,30 @@ typedef struct sNo
     struct sNo* proximo;
 }No;
 
+typedef struct sLista
+{
+    No* inicio;
+    int tamanho;
+}Lista;
 
 //criar lista:
-No* criar_lista()
+void criar_lista(Lista* lista)
 {
-    No *lista = NULL;
-return lista;
+    lista->inicio = NULL;
+    int tamanho = 0;
 }
 
-
 //inserir no início:
-bool inserir_inicio(No **lista, int num)
+bool inserir_inicio(Lista *lista, int num)
 {
     No *novo = (No*) malloc(sizeof(No));
 
     if(novo != NULL)
     {    
     novo->valor = num;
-    novo->proximo = *lista;
-    *lista = novo;
+    novo->proximo = lista->inicio;
+    lista->inicio = novo;
+    lista->tamanho++;
    
     return true;
     }else
@@ -62,7 +67,7 @@ bool inserir_inicio(No **lista, int num)
 }
 
 //inserir no fim:
-bool inserir_final(No **lista, int num)
+bool inserir_final(Lista *lista, int num)
 {   
     No *aux, *novo = (No*) malloc(sizeof(No));
     if(novo != NULL)
@@ -71,15 +76,17 @@ bool inserir_final(No **lista, int num)
         novo->proximo = NULL;
     
     //é o primeiro da lista?
-        if(*lista == NULL)
-            *lista = novo;
+        if(lista->inicio == NULL)
+            lista->inicio = novo;
         else
         {
-            aux = *lista;
+            aux = lista->inicio;
             while(aux->proximo != NULL)
                 aux = aux->proximo;
             aux->proximo = novo;
         }
+
+        lista->tamanho++;
 
         return true;
 
@@ -91,15 +98,31 @@ bool inserir_final(No **lista, int num)
 }
 
 //inserir no meio:
-bool inserir_meio(**Lista, int num, int ant)
+bool inserir_meio(Lista *lista, int num, int ant)
 {
-    No *novo = (No*) malloc(sizeof(No));
+    No *aux, *novo = (No*) malloc(sizeof(No));
     
     if(novo != NULL)
     {
         novo->valor = num;
         //é o primeir nó da lista?
-        
+        if(lista->inicio == NULL)
+        {
+            novo->proximo = NULL;
+            lista->inicio = novo;
+        }else
+        {
+            aux = lista->inicio;
+            while(aux->valor != ant && aux->proximo != NULL)
+                aux = aux->proximo;
+                novo->proximo = aux->proximo;
+                aux->proximo = novo;
+
+        }
+
+        lista->tamanho++;
+
+        return true;
 
     }else
     {
@@ -108,63 +131,81 @@ bool inserir_meio(**Lista, int num, int ant)
     }
 }
 
-
-
-
-
-//FUNÇÃO PRINCIPAL: 
-int main()  
+//imprimir lista
+void imprimir_lista(Lista lista)
 {
-    int opcao, valor, anterior;
-    No* lista = criar_lista();
-    
-
-    do
+    No *no = lista.inicio;
+    cout << endl << "Lista: ";
+    while(no != NULL)
     {
-    cout << "======MENU=====: " << endl;
-    cout << "1 - Inserir no Inicio. " << endl;
-    cout << "2 - Inserir no Final. " << endl;
-    cout << "3 - Inserir no Meio. " << endl;
-    cout << "4 - Imprimir Lista." << endl;
-    cout << endl << "Escolha sua opcao: ";
-    cin >> opcao;
-    
-    switch(opcao)
+        cout << no->valor;
+        no->proximo;
+    }
+    cout << endl;
+}
+
+
+//inserir ordenado
+bool inserir_ordenado(Lista* lista, int num)
+{
+    No *aux, *novo = (No*) malloc(sizeof(No));
+    if(novo != NULL)
     {
-        case 1: 
-            cout << "Digite um valor: ";
-            cin >> valor;
-            inserir_inicio(&lista, valor);
-        break;
+        novo->valor = num;
+        if(lista->inicio == NULL)
+        {
+            novo->proximo = NULL;
+            lista->inicio = novo;
+        }
+        else if(novo->valor < lista->inicio->valor)
+        {
+            novo->proximo = lista->inicio;
+            lista->inicio = novo;
+        }
+        else
+        {
+            aux = lista->inicio;
+            while(aux->proximo != NULL && novo->valor > aux->proximo->valor)
+                    aux = aux->proximo;
+            novo->proximo = aux->proximo;
+            aux->proximo = novo;
 
-        case 2:
-            cout << "Digite um valor: ";
-            cin >> valor;
-            inserir_final(&lista, valor);
-        break;
+        }
 
-        case 3:
-            cout << "Digite um valor e o valor de referencia: ";
-            cin >> valor >> anterior;
-            inserir_meio(&lista, valor, anterior);
-        break;
+        return true;
 
-        case 4:
-            imprimir(lista);
-        break;
 
-        default:
-            if(opcao != 0)
-                cout << "Opcao Invalida!" << endl;
+    }else
+    {
+        cout << "Erro ao alocar memoria!" << endl;
+        return false;
+    }
+}
+
+//remover um nó da lista:
+No* remover_no(Lista* lista, int num)
+{
+    No *aux, *remover = NULL;
+    if(lista->inicio != NULL)
+    {
+        if(lista->inicio->valor == num)
+        {
+            remover = lista->inicio;
+            lista->inicio = remover->proximo;
+        }else
+        {
+            aux = lista->inicio;
+            while(aux->proximo != NULL && aux->proximo->valor != num)
+                aux = aux->proximo;
+            if(aux->proximo != NULL)
+            {
+                remover = aux->proximo;
+                aux->proximo 
+            }
+        }
     }
 
-    }while(opcao != 0);
-
-    liberar_lista(lista);
-
-
-
-    return 0;
+    return remover;
 }
 
 
