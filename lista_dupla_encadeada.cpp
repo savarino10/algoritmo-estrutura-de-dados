@@ -107,3 +107,9 @@ int remover_inicio(Lista* lista)
     lista->tamanho--;
     return 1;
 }
+
+int main()
+{
+
+    return 0;
+}
