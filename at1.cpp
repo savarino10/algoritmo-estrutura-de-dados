@@ -1,149 +1,159 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-typedef struct sNo
-{
-    int valor;
-    struct sNo *proximo;
-}No;
+// EXERCICIO 4 LISTA LSE
 
-typedef struct sLista
+//EXERCICIO 2 SIMULADO
+int letras_comuns(No* palavra1, No* palavra2)
 {
-    No *inicio;
-}Lista;
+    No *aux = palavra1;
 
-void criar_lista(Lista* lista)
-{
-    lista->inicio = NULL;
-}
+    if(palavra1 == NULL || palavra2 == NULL)
+        return 0;
 
-bool inserir_lista(Lista* lista, int elemento)
-{
-    No *aux, *novoNo = (No*) malloc(sizeof(No));
-    if(novoNo != NULL)
+    while(aux != NULL)
     {
-        novoNo->valor = elemento;
-        novoNo->proximo = NULL;
-
-        if(lista->inicio == NULL)
+        No *temp = palavra2;
+        while(temp != NULL)
         {
-            lista->inicio = novoNo;
-        }else
-        {
-            aux = lista->inicio;
-            while(aux->proximo != NULL)
-                aux = aux->proximo;
-            aux->proximo = novoNo;
+            if(aux->elemento == temp->elemento)
+                return 1;
+            temp = temp->proximo;         
         }
-        return true;
-    }else
-    {
-        cout << "Erro ao alocar memoria!" << endl;
-        return false;
-    }
-}
-
-void copiar_lista(Lista* L1, Lista* L2)
-{
-    No *aux = L1->inicio;
-    while(aux != NULL)
-    {
-        inserir_lista(L2, aux->valor);
         aux = aux->proximo;
     }
-}
-
-bool existe_lista(Lista *lista, int elemento)
-{
-    No* aux = lista->inicio;
-    while(aux != NULL)
-    {
-        if(aux->valor == elemento)
-            return true;
-        aux = aux->proximo;
-    }
-    return false;
-}
-
-void copia_sem_repetidos(Lista* L1, Lista *L2)
-{
-    No *aux = L1->inicio;
-    while(aux != NULL)
-    {
-        if(!existe_lista(L2, aux->valor))
-            inserir_lista(L2, aux->valor);
-
-        aux = aux->proximo;
-    }
-}
-
-
-void imprimir_lista(Lista lista)
-{
-    No* no = lista.inicio;
-    while(no != NULL)
-    {
-        cout << no->valor << " ";
-        no = no->proximo;
-    }
-    cout << endl;
-}
-
-void liberar_lista(Lista* lista)
-{
-    No *atual = lista->inicio;
-    No *prox;
-    while(atual != NULL)
-    {
-        prox = atual->proximo;
-        free(atual);
-        atual = prox;
-    }
-    lista->inicio = NULL;
-}
-
-int main()
-{
-    Lista L1, L2;
-    criar_lista(&L1);
-    criar_lista(&L2);
-    int valor;
-    int opcao;
-    cout << "Lista 1: " << endl;
-    cout << "Escolha uma opcao: " << endl;
-    cout << "0 - Finalizar" << endl;
-    cout << "1 - Inserir elemento" << endl;
-    do
-    {
-        cin >> opcao;
-        switch(opcao)
-        {
-            case 1:
-                cout << "Insira um elemento na lista: ";
-                cin >> valor;
-                inserir_lista(&L1, valor);
-                break;
-            default:
-                if(opcao != 0)
-                    cout << "Opcao invalida!" << endl;
-            break;
-        }
-        
-    }while(opcao != 0);
-
-    cout << "Lista 1 digitada: ";
-    imprimir_lista(L1);
-
-    copia_sem_repetidos(&L1, &L2);
-    cout << "Lista 2 sem repetidos: ";
-    imprimir_lista(L2);
-
-    
-
-
-    
-    
-
     return 0;
 }
 
+//EXERCICIO 3 SIMULADO
+int palindromo(Lista* palavra)
+{
+    if(palavra == NULL)
+        return 1;
+
+    No *aux = palavra->inicio;
+    
+    int tamanho = 0;
+    
+    while(aux->proximo != NULL)
+    {
+        tamanho++;
+        aux = aux->proximo;
+    }
+
+    char *palavra = (char*) malloc(tamanho * sizeof(char));
+    for(int i = 0; i < tamanho; i++)
+    {
+        palavra[i] = aux->letra;
+        aux = aux->proximo;
+    }
+    int i = 0;
+    int j = tamanho - 1;
+    while(i < j)
+    {
+        if(palavra[i] != palavra[j])
+        {
+            free(palavra);
+            return 0;
+        }
+        i++;
+        j--;
+        
+    }
+    free(palavra);
+    return 1;
+}
+
+//EXERCICIO 3 DO MANZATO
+int palindromo(Lista* palavra)
+{
+    if(palavra->inicio == NULL)
+        return 1;
+    
+    No *pos_inicial = palavra->inicio;
+    No *pos_final = palavra->final;
+
+    while(pos_inical != pos_final && pos_inicial->anterior != pos_final)
+    {
+        if(pos_inicial->letra != pos_final->letra)
+            return 0;
+        pos_inicial = pos_inicial->proximo;
+        pos_final = pos_final->anterior;
+    }
+    
+    return 1;
+}
+
+int letras_comuns(No *palavra1, No*palavra2)
+{
+    if(palavra1 == NULL || palavra2 == NULL)
+        return 0;
+    
+    No *aux1 = palavra1;
+    while(aux1 != NULL)
+    {  
+        No *aux2 = palavra2;
+        while(aux2 != NULL)
+        {
+        if(aux1->letra == aux2->letra)
+            return 1;
+        aux2 = aux2->proximo;
+        }
+        aux1 = aux1->proximo;
+    }
+    return 0;
+}
+
+int palindromo(Lista *lista)
+{
+    if(lista == 0)
+        return 1;
+    
+    int tamanho = 0;
+    No *aux = lista->inicio;
+    while(aux->proximo != NULL)
+    {
+        tamanho++;
+        aux = aux->proximo;
+    }
+    char *palavra = (char*) malloc(tamanho * sizeof(char));
+    
+    for(int i = 0; i < tamanho; i++)
+    {
+        palavra[i] = aux->letra;
+        aux = aux->proximo;
+    }
+
+    int i = 0;
+    int j = tamanho - 1;
+    while(i < j)
+    {
+        if(palavra[i] != palavra[j])
+        {
+            free(palavra);
+            return 0;
+        }
+        i++;
+        j--;
+    }
+
+    free(palavra);
+    return 1;
+}
+
+int palindromo(Lista *lista)
+{
+    if(lista == NULL)
+        return 1;
+
+    No *posInicio = lista->inicio;
+    No *posFim = lista->fim;
+    while(posInicio != posFim && posInicio->anterior != posFim)
+    {
+        if(posInicio->letra != posFim->letra)
+            return 0; 
+        posInicio = posInicio->proximo;
+        posFim = posFim->anterior;
+    }
+    return 1;
+}
